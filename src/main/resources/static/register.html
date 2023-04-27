@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Register - Brand</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet" href="assets/css/Drag-and-Drop-File-Input.css">
+      <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.0.18/sweetalert2.min.css"  crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.0.18/sweetalert2.min.js" i crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+
+</head>
+
+<body class="bg-gradient-primary">
+    <div class="container">
+        <div class="card shadow-lg o-hidden border-0 my-5">
+            <div class="card-body p-0">
+                <div class="row">
+                    <div class="col-lg-5 d-none d-lg-flex">
+                        <div class="flex-grow-1 bg-register-image" style="background-image: url(&quot;assets/img/dogs/image2.jpeg&quot;);"></div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <h4 class="text-dark mb-4">Create an Account!</h4>
+                            </div>
+                            
+<form class="user" id="register-form">
+  <div class="row mb-3">
+    <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user" type="text" id="exampleFirstName" placeholder="First Name" name="first_name"></div>
+    <div class="col-sm-6"><input class="form-control form-control-user" type="text" id="exampleLastName" placeholder="Last Name" name="last_name"></div>
+  </div>
+  <div class="mb-3"><input class="form-control form-control-user" type="email" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Email Address" name="email"></div>
+
+  <div class="form-group mb-3">
+    <label>Authentication Method:</label>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="authenticationMethod" id="passwordAuthentication" value="password" checked>
+      <label class="form-check-label" for="passwordAuthentication">
+        Password
+      </label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="authenticationMethod" id="fileAuthentication" value="file">
+      <label class="form-check-label" for="fileAuthentication">
+        File
+      </label>
+    </div>
+  </div>
+
+  <div class="form-group mb-3 password-authentication">
+    <div class="row">
+      <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user" type="password" id="examplePasswordInput" placeholder="Password" name="password"></div>
+      <div class="col-sm-6"><input class="form-control form-control-user" type="password" id="exampleRepeatPasswordInput" placeholder="Repeat Password" name="password_repeat"></div>
+    </div>
+  </div>
+  
+  <div class="form-group mb-3 file-authentication d-none">
+    <label>File Authentication:</label>
+    <div class="file-drop-area">
+      <span class="fake-btn">Choose file</span>
+      <span class="file-msg">or drag and drop a file here</span>
+      <input class="form-control file-input" type="file" name="file_authentication">
+    </div>
+  </div>
+
+  <button class="btn btn-primary d-block btn-user w-100" type="submit">Register Account</button>
+  <hr>
+  <hr>
+</form>
+
+<script>
+  axios.get('http://localhost:8080/getUser')
+  .then(response => {
+    console.log('Success: ', response.data.status);
+    if(response.data.status=="success")
+    {
+      window.location.href = '/Dashboard.html';
+    }
+  })
+  .catch(error => {
+    console.log('Error: ', error.response.status);
+  });
+
+
+
+
+  // Add event listener to the radio buttons to show/hide the authentication method fields
+  var passwordAuthentication = document.querySelector('.password-authentication');
+  var fileAuthentication = document.querySelector('.file-authentication');
+
+  document.getElementById('passwordAuthentication').addEventListener('change', function() {
+    passwordAuthentication.classList.remove('d-none');
+    fileAuthentication.classList.add('d-none');
+  });
+
+  document.getElementById('fileAuthentication').addEventListener('change', function() {
+    passwordAuthentication.classList.add('d-none');
+    fileAuthentication.classList.remove('d-none');
+  });
+
+  // Get the form element and add an event listener for form submission
+const form = document.getElementById('register-form');
+form.addEventListener('submit', (event) => {
+  event.preventDefault(); // prevent default form submission behavior
+
+  // Get the password authentication method and password fields
+  const authMethod = document.querySelector('input[name="authenticationMethod"]:checked').value;
+  const passwordInput = document.getElementById('examplePasswordInput');
+  const repeatPasswordInput = document.getElementById('exampleRepeatPasswordInput');
+
+  // Check if password authentication method is selected
+  if (authMethod === 'password') {
+    // Check if password and repeat password match
+    if (passwordInput.value !== repeatPasswordInput.value) {
+      // Display an error message
+      alert('Passwords do not match');
+      return; // stop form submission
+    }
+  }
+
+  // Create a FormData object and append form data to it
+  const formData = new FormData(form);
+
+  // Send a POST request to /register endpoint using Axios
+  axios.post('/register', formData)
+  .then(response => {
+    // Handle successful response
+    console.log(response.data);
+    Swal.fire({
+      icon: 'success',
+      title: 'Registration successful',
+      showConfirmButton: false,
+      timer: 3500
+    }).then(() => {
+      window.location.href = '/login.html';
+    });
+  })
+  .catch(error => {
+    // Handle error response
+    console.error(error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Registration failed',
+      text: error.response.data.message
+    });
+  });
+
+});
+
+
+
+
+
+
+</script>
+
+
+
+                            <div class="text-center"><a class="small" href="forgot-password.html">Forgot Password?</a></div>
+                            <div class="text-center"><a class="small" href="login.html">Already have an account? Login!</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/Drag-and-Drop-File-Input-Drag-And-Drop-Image.js"></script>
+    <script src="assets/js/theme.js"></script>
+</body>
+
+</html>
