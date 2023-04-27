@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Secure Me Files</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/css/Drag-and-Drop-File-Input.css">
+
+     <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+
+              <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.0.18/sweetalert2.min.css"  crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.0.18/sweetalert2.min.js" i crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+
+
+    <script type="text/javascript">
+    axios.get('http://localhost:8080/getUser')
+      .then(response => {
+        console.log('Success: ', response.data.status);
+        if(response.data.status=="error")
+        {
+          window.location.href = '/login.html';
+        }
+      })
+      .catch(error => {
+        console.log('Error: ', error.response.status);
+      });
+    </script>
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                    <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-share-alt"></i></div>
+                    <div class="sidebar-brand-text mx-3"><span>Secure Me</span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link" href="Dashboard.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="profile.html"><i class="fas fa-user"></i><span>Profile</span></a></li>
+                    <li class="nav-item"><a class="nav-link active" href="files.html"><i class="fas fa-table"></i><span>Files</span></a></li>
+                  <!--   <li class="nav-item"><a class="nav-link" href="login.html"><i class="far fa-user-circle"></i><span>Login</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="register.html"><i class="fas fa-user-circle"></i><span>Register</span></a></li> -->
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                        <form class="d-none d-sm-inline-block me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
+                            <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search for ..."><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
+                        </form>
+                        <ul class="navbar-nav flex-nowrap ms-auto">
+                            
+                           
+                           
+                            <div class="d-none d-sm-block topbar-divider"></div>
+                            <li class="nav-item dropdown no-arrow">
+                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><span class="d-none d-lg-inline me-2 text-gray-600 small">{{ userdata.first_name }} {{ userdata.last_name }}</span><img class="border rounded-circle img-profile" src="assets/img/avatars/avatar1.jpeg"></a>
+                                    <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in"><a class="dropdown-item" href="#"><i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Profile</a><a class="dropdown-item" href="#"><i class="fas fa-cogs fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Settings</a><a class="dropdown-item" href="#"><i class="fas fa-list fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Activity log</a>
+                                        <div class="dropdown-divider"></div><a class="dropdown-item" href="/doLogout"><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Logout</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+<div class="container-fluid">
+   <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="text-dark mb-0">My Files</h3>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadModal">
+  Upload new file
+</button>
+
+
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form class="modal-content" onsubmit="event.preventDefault(); uploadFile();" id="uploadForm">
+  <div class="modal-header">
+    <h5 class="modal-title" id="uploadModalLabel">Upload File</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group mb-3 file-login">
+      <label>File Authentication</label>
+      <div class="file-drop-area">
+        <span class="fake-btn">Choose file</span>
+        <span class="file-msg">or drag and drop a file here</span>
+        <input class="form-control file-input" type="file" name="file" id="fileInput" onchange="document.getElementById('selectedFileName').textContent = event.target.files[0].name">
+      </div>
+      <p id="selectedFileName"></p>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="finupload">Close</button>
+    <button type="submit" class="btn btn-primary">Upload</button>
+  </div>
+</form>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+  function uploadFile() {
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+
+    if (!file) {
+      swal('Error', 'Please select a file', 'error');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    axios.post('/uploadFile', formData)
+      .then(function(response) {
+
+        swal('Success', response.data.message, 'success');
+        document.getElementById("uploadForm").reset();
+        document.getElementById('selectedFileName').innerHTML="";
+        app2.loadFiles();
+        document.querySelector("#finupload").click();
+
+      })
+      .catch(function(error) {
+        console.log(error);
+        swal('Error', error.response.data.message, 'error');
+      });
+  }
+</script>
+
+
+
+
+
+  </div>
+</div>
+
+
+
+  </div>
+  <div class="row" id="listFiles">
+    <!-- Sample file -->
+    <div class="col col-xl-2 col-md-4 col-sm-9 col-xs-12 p-4" v-for="file in files" :key="file.id">
+      <div class="file-item d-block">
+        <div class="file-options" style="position:absolute; right:20px;color:black">
+          <button class="btn btn-link" data-toggle="modal" data-target="#fileOptionsModal" @click="setSelectedFile(file)">
+            <i class="fas fa-ellipsis-v fa-lg"></i>
+          </button>
+        </div>
+        <div class="file-icon">
+          <table>
+            <tr>
+              <td>
+          <i class="fas fa-file fa-3x"></i>
+        </td>
+        <td>
+          <i style="font-size:13px">{{ formatDate(file.uploadDate) }}
+          <br>
+          {{ formatTime(file.uploadDate) }}
+        </i>
+        <td>
+
+      </tr></table>
+        </div>
+        <div class="file-name">
+          {{file.uploadName}}
+        </div>
+        <div>
+          
+        </div>
+        
+      </div>
+    </div>
+
+
+
+
+  </div>
+  
+  <!-- File options modal -->
+  <div class="modal fade" id="fileOptionsModal" tabindex="-1" role="dialog" aria-labelledby="fileOptionsModalLabel" aria-hidden="true" v-if="selectedfile!=null">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="fileOptionsModalLabel">{{ selectedfile.uploadName }}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- File options form -->
+          <form>
+  <table class="file-details">
+    <tr>
+      <td class="key">Filename:</td>
+      <td class="value">{{ selectedfile.uploadName }}</td>
+    </tr>
+    <tr>
+      <td class="key">Blake2 Hash:</td>
+      <td class="value">
+        <textarea v-model="selectedfile.fileHash" rows="2" readonly></textarea>
+        <button type="button" class="btn btn-primary" @click="copyHash(selectedfile.fileHash)">Copy</button>
+      </td>
+    </tr>
+    <tr>
+      <td class="key">Upload Date:</td>
+      <td class="value">{{ formatDateTime(selectedfile.uploadDate) }}</td>
+    </tr>
+    <tr>
+      <td class="key">File Size:</td>
+      <td class="value">{{ formatSize(selectedfile.size) }}</td>
+    </tr>
+    <tr>
+      <td colspan="2" class="value">
+        <a :href="getDownloadUrl(selectedfile)" class="btn btn-primary" download>Download</a>
+      </td>
+    </tr>
+  </table>
+  
+
+
+
+</form>
+
+<style>
+.file-details {
+  width: 100%;
+}
+
+.key {
+  width: 150px;
+  font-weight: bold;
+  vertical-align: top;
+}
+
+.value {
+  vertical-align: top;
+}
+
+.value textarea {
+  width: 100%;
+}
+
+.value button {
+  margin-top: 5px;
+}
+</style>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  
+</div>
+
+<style>
+  .file-item {
+    text-align: center;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    position: relative;
+  }
+  .file-icon {
+    margin-bottom: 10px;
+  }
+  .file-name a {
+    color: #333;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  .file-name a:hover {
+    text-decoration: underline;
+  }
+
+
+
+
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+
+
+
+
+
+            </div>
+            <footer class="bg-white sticky-footer">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright © Brand 2023</span></div>
+                </div>
+            </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/Drag-and-Drop-File-Input-Drag-And-Drop-Image.js"></script>
+    <script src="assets/js/theme.js"></script>
+      <!-- Bootstrap JS -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="assets/js/Drag-and-Drop-File-Input-Drag-And-Drop-Image.js"></script>
+
+
+
+  <script>
+  // Create a new Vue instance
+  var app2 = new Vue({
+    // Specify the element to mount Vue instance
+    el: '#wrapper',
+    // Specify the data for Vue instance
+    data: {
+      message: 'Hello Vue!',
+      userdata: [],
+      files:[],
+      selectedfile:null
+    },
+    mounted() {
+      console.log("mounted")
+      axios.get('http://localhost:8080/getUser')
+        .then(response => {
+          this.userdata = response.data.user;
+          console.log(this.userdata)
+          console.log('Vue.js application launched successfully!');
+        })
+        .catch(error => {
+          console.log(error);
+        });
+
+
+        this.loadFiles();
+    },
+    methods:{
+      loadFiles()
+      {
+        axios.get('http://localhost:8080/listFiles')
+        .then(response => {
+          this.files = response.data;
+          console.log(this.files)
+          console.log('files gotten successfully!');
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      },
+      formatDate(date) {
+      const options = { day: 'numeric', month: 'short', year: 'numeric' };
+      return new Date(date).toLocaleDateString('en-US', options);
+      },
+      formatTime(date) {
+        const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+        return new Date(date).toLocaleTimeString('en-US', options);
+      },
+      formatDateTime(date) {
+        const formattedDate = this.formatDate(date);
+        const formattedTime = this.formatTime(date);
+        return `${formattedDate} at ${formattedTime}`;
+      },
+      setSelectedFile(file)
+      {
+        this.selectedfile=file;
+      },
+      formatSize(size) {
+        const units = ['B', 'KB', 'MB', 'GB'];
+        let i = 0;
+        while (size >= 1024 && i < units.length - 1) {
+          size /= 1024;
+          i++;
+        }
+        return size.toFixed(2) + ' ' + units[i];
+      },
+      copyHash(hash) {
+        // Copy hash logic
+        // Copy hash logic
+        navigator.clipboard.writeText(hash)
+          .then(() => {
+            alert('Hash copied successfully!');
+          })
+          .catch((error) => {
+            console.error('Failed to copy hash:', error);
+          });
+      },
+      getDownloadUrl(myfile){
+        return "/download?file="+myfile.id
+      }
+
+    }
+  })
+  console.log('Vue.js application launched successfully!');
+</script>
+</body>
+
+</html>
