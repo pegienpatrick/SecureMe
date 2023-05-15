@@ -41,7 +41,7 @@ import org.springframework.core.io.Resource;
 
 public class MainController{
 
-	private Blake2b bl=new Blake2b(64);
+	
 
 	@Autowired
 	private UserRepository userRepository;
@@ -138,7 +138,7 @@ public class MainController{
 			return ResponseEntity.badRequest().body(response);
 
 		}
-		bl=new Blake2b(64);
+		Blake2b bl=new Blake2b(64);
 
 		User user=new User();
 
