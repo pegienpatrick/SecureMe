@@ -127,7 +127,7 @@ public class MainController{
 											   @RequestParam(value = "password_repeat", required = false) String passwordRepeat,
 											   @RequestParam(value = "file_authentication", required = false) MultipartFile fileAuthentication) {
 
-		//System.out.println("we are here");
+		System.out.println("we are here " + email+" password:"+password+";");
 		// Check if authentication method is password and passwords don't match
 		if (authenticationMethod.equals("password") && !password.equals(passwordRepeat)) {
 			// Return error response
@@ -138,6 +138,7 @@ public class MainController{
 			return ResponseEntity.badRequest().body(response);
 
 		}
+		bl=new Blake2b(64);
 
 		User user=new User();
 
@@ -164,6 +165,7 @@ public class MainController{
 		}
 		try {
 			// Save the user
+			System.out.println("got hash "+user.getPasswordHash());
 
 			userRepository.save(user);
 
@@ -209,12 +211,27 @@ public class MainController{
 			if(authenticationMethod.equals("password")) {
 
 				if(bytesToHex(bl.hash(null,password.getBytes())).equals(user.getPasswordHash())) {
+					bl=new Blake2b(64);
+
+					System.out.println("Correct Login");
+					System.out.println("user hash : "+user.getPasswordHash());
+					System.out.println("password hash : "+bytesToHex(bl.hash(null,password.getBytes())));
+					//System.out.println("password hash : "+bytesToHex(bl.hash(null,password.getBytes())));
+
+
 					session.setAttribute("user",user);
 					JSONObject response = new JSONObject();
 					response.put("status", "success");
 					return ResponseEntity.ok(response);
 
 				} else{
+
+					bl=new Blake2b(64);
+					System.out.println("invalid Login");
+					System.out.println("user hash : "+user.getPasswordHash());
+					System.out.println("password hash : "+bytesToHex(bl.hash(null,password.getBytes())));
+					//System.out.println("password hash : "+bytesToHex(bl.hash(null,password.getBytes())));
+
 
 					JSONObject response = new JSONObject();
 					response.put("status", "error");
