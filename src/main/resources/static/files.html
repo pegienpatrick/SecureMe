@@ -24,7 +24,7 @@
 
 
     <script type="text/javascript">
-    axios.get('http://localhost:8080/getUser')
+    axios.get('/getUser')
       .then(response => {
         console.log('Success: ', response.data.status);
         if(response.data.status=="error")
@@ -339,7 +339,7 @@
     },
     mounted() {
       console.log("mounted")
-      axios.get('http://localhost:8080/getUser')
+      axios.get('/getUser')
         .then(response => {
           this.userdata = response.data.user;
           console.log(this.userdata)
@@ -355,7 +355,7 @@
     methods:{
       loadFiles()
       {
-        axios.get('http://localhost:8080/listFiles')
+        axios.get('/listFiles')
         .then(response => {
           this.files = response.data;
           console.log(this.files)
